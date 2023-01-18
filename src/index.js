@@ -13,12 +13,12 @@ import './index.css';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/*',
     element: <Main />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: '/:user/:id',
+        path: ':user/:id',
         element: <Moment />,
       }
     ]
