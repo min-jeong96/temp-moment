@@ -11,6 +11,8 @@ import { ErrorPage } from './pages/error.js';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 
+window.Buffer = window.Buffer || require("buffer").Buffer;
+
 const router = createBrowserRouter([
   {
     path: '/*',

@@ -1,0 +1,16 @@
+.container {
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: fixed;
+  background-color: var(--background);
+}
+
+.header {
+  padding: 40px 0 0;
+}
