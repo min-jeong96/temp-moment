@@ -9,8 +9,37 @@
   width: 100%;
   position: fixed;
   background-color: var(--background);
+  opacity: 0.9;
+}
+.toolbar > .title {
+  margin: 0 0 0 16px;
+  font-weight: bold;
+}
+.toolbar > .buttons {
+  margin: 0 8px 0 0;
 }
 
 .header {
-  padding: 40px 0 0;
+  padding: 40px 16px 16px;
+  color: var(--text);
+  font-weight: bold;
+  border-bottom: 1px solid var(--sub-text);
+}
+.header > .info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header .user-id a {
+  color: var(--text);
+  text-decoration: none;
+}
+.header .description,
+.header .edit-date {
+  color: var(--sub-text);
+  font-weight: normal;
+}
+
+.tweets {
+  padding: 12px 16px;
 }

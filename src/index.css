@@ -1,10 +1,7 @@
 :root {
   --background: #fff;
-  --text: #363636;
-  --heading-text: #000;
-  --anchor-text: #0076d1;
-  --code-background: #efefef;
-  --code-text: #000;
+  --text: #222;
+  --sub-text: #666;
   background: var(--background);
   color: var(--text);
 }
@@ -12,11 +9,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: rgb(21, 32, 43);
-    --text: #dbdbdb;
-    --heading-text: #fff;
-    --anchor-text: #0076d1;
-    --code-background: #161f27;
-    --code-text: #ffbe85;
+    --text: #fff;
+    --sub-text: #aaa;
   }
 }
 

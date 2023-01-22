@@ -59,8 +59,8 @@ export function Moment(props) {
   return (
     <div className='container'>
       <div className='toolbar'>
-        <div>{momentData.title}</div>
-        <ButtonGroup>
+        <div className='title'>{momentData.title}</div>
+        <ButtonGroup className='buttons'>
           <IconButton aria-label="share">
             <IosShareIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
@@ -70,20 +70,21 @@ export function Moment(props) {
         </ButtonGroup>
       </div>
       <div className='header'>
-        <div><a href={`https://twitter.com/${user}`}>@{user}</a></div>
-        <div>{momentData.title}</div>
-        <div>{momentData.description}</div>
-        <time dateTime={`${new Date(momentData.timestamp)}`}>
-          {new Date(momentData.timestamp).toLocaleDateString('ko-kr', { year: 'numeric', month: 'long', day: 'numeric' })}
-        </time>
+        <div className='description'>{momentData.description}</div>
+        <div className='info'>
+          <div className='user-id'><a href={`https://twitter.com/${user}`}>@{user}</a></div>
+          <time className='edit-date' dateTime={`${new Date(momentData.timestamp)}`}>
+            {new Date(momentData.timestamp).toLocaleDateString('ko-kr', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+        </div>
       </div>
       <div className='tweets'>
         {
           momentData.tweets.map((tweet) => {
             return (
-              <>
-                <Tweet key={getTweetId(tweet)} tweetId={getTweetId(tweet)} options={{ theme: isOSDarkMode ? 'dark' : 'light' }}/>
-              </>
+              <div className='tweet' key={getTweetId(tweet)}>
+                <Tweet tweetId={getTweetId(tweet)} options={{ theme: isOSDarkMode ? 'dark' : 'light' }}/>
+              </div>
             );
           })
         }
