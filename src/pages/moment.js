@@ -61,10 +61,10 @@ export function Moment(props) {
       <div className='toolbar'>
         <div className='title'>{momentData.title}</div>
         <ButtonGroup className='buttons'>
-          <IconButton aria-label="share">
+          <IconButton aria-label="share" onClick={share}>
             <IosShareIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
-          <IconButton aria-label="etc functions">
+          <IconButton aria-label="etc functions" disabled>
             <MoreHorizIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
         </ButtonGroup>
@@ -100,4 +100,11 @@ function getTweetId(url) {
   // id filtering
   let id = urlPath.split('/')[urlPath.split('/').length - 1];
   return id;
+}
+
+function share() {
+  // console.log(window.location.href);
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => { console.log('Text copied to clipboard...') })
+    .catch((error) => { console.error(error) });
 }
