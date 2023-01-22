@@ -6,7 +6,7 @@ import { app } from './firebase.js';
 const firestore = getFirestore(app);
 
 async function getPasswordCode(user, id) {
-  const docRef = doc(firestore, 'auth', `${user}-${id}`);
+  const docRef = doc(firestore, 'auth', `${user}:${id}`);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -17,7 +17,7 @@ async function getPasswordCode(user, id) {
 }
 
 async function getMomentData(user, id) {
-  const docRef = doc(firestore, 'moments', `${user}-${id}`);
+  const docRef = doc(firestore, 'moments', `${user}:${id}`);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -28,7 +28,7 @@ async function getMomentData(user, id) {
 }
 
 async function updateMomentData(user, id, obj) {
-  const docRef = doc(firestore, 'moments', `${user}-${id}`);
+  const docRef = doc(firestore, 'moments', `${user}:${id}`);
   await updateDoc(docRef, obj);
 }
 
