@@ -15,8 +15,8 @@ import './moment.css';
 export function Moment(props) {
   const {user, id} = useParams();
   const [momentData, setMomentData] = useState({
-    title: '',              // 모멘트 제목
-    description: '',        // 모멘트 설명
+    title: 'Loading…',              // 모멘트 제목
+    description: 'Loading…',        // 모멘트 설명
     timestamp: Date.now(),  // 모멘트 최종 수정일
     username: user,         // 모멘트 작성자
     tweets: []              // 트윗 목록
@@ -79,11 +79,13 @@ export function Moment(props) {
         </div>
       </div>
       <div className='tweets'>
-        {
+        { // TODO: Tweet loading skeleton 처리 하기
           momentData.tweets.map((tweet) => {
             return (
               <div className='tweet' key={getTweetId(tweet)}>
-                <Tweet tweetId={getTweetId(tweet)} options={{ theme: isOSDarkMode ? 'dark' : 'light' }}/>
+                <Tweet
+                  tweetId={getTweetId(tweet)}
+                  options={{ theme: isOSDarkMode ? 'dark' : 'light' }} />
               </div>
             );
           })
