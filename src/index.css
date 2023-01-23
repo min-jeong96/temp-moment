@@ -2,6 +2,7 @@
   --background: #fff;
   --text: #222;
   --sub-text: #666;
+  --shadow-color: #ccc;
   background: var(--background);
   color: var(--text);
 }
@@ -11,6 +12,7 @@
     --background: rgb(21, 32, 43);
     --text: #fff;
     --sub-text: #aaa;
+    --shadow-color: #333;
   }
 }
 

@@ -6,10 +6,6 @@ const axios = require("axios");
 const { TwitterApi } = require('twitter-api-v2');
 const { Client, auth } = require('twitter-api-sdk');
 
-const REACT_APP_CLIENT_ID = 'TXBUS2VkdVdqWl9zeGhqMGp0ZlM6MTpjaQ'
-const REACT_APP_CLIENT_SECRET = 'EhFoHsVKRf-kRfeq-LRNwWU3hLqhS6r-Y_XaiQgpeOPGTtnpB3'
-const REACT_APP_TWITTER_BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAF5BlQEAAAAAhYCS19K%2FmrcsyOed0jd1VoIZ9n8%3DAOdVLn9KsS2QP4q2U5kGz8ISc1RSUPUcl9NKvEcex0gd69qbpQ';
-
 const app = express();
 app.use(cors({origin: true}));
 
@@ -25,39 +21,76 @@ app.options('/getTweets', (req, res) => {
   res.send();
 });
 
-app.get('/getTweets', async (req, res) => {
-  console.log('getTweets start');
+app.get('/getTweets', async(req, res) => {
+  console.log('getTweets');
+  console.log(functions.config())
 
-  // const authClient = new auth.OAuth2User({
-  //   client_id: REACT_APP_CLIENT_ID,
-  //   client_secret: REACT_APP_CLIENT_SECRET,
-  //   callback: "http://127.0.0.1:5001/",
-  //   scopes: ["tweet.read", "users.read"],
-  //  });
-
-  // const client = new Client(REACT_APP_TWITTER_BEARER_TOKEN);
-  // const tweet = await client.tweets.findTweetById('1515224918044004354', {
-  //   expansions: ['in_reply_to_user_id', 'referenced_tweets.id'],
-  //   'tweet.fields': ["attachments", "author_id", "context_annotations", "conversation_id", "created_at", "edit_controls", "edit_history_tweet_ids", "entities", "referenced_tweets", "text"]
+  const client = new Client(req.header('Authorization'));
+  // const tweets = await client.tweets.tweetsRecentSearch({
+  //   query: 'conversation_id:1597956724375580672',
+  //   expansions: ['referenced_tweets.id'],
+  //   'tweet.fields': ['id', 'text', 'created_at', 'referenced_tweets']
   // });
 
-  // res.status(200).send({ tweet });
+  const tweetsId = req.header('tweetsId');
+  /* twitter API v2 GET /tweets data format ▼ 더보기
+    retur type
+    tweets: {
+      data: [
+        {
+          author_id: string,  // 트윗 작성자의 twitter unique key
+          create_at: string,  // 트윗 생성 시점
+          id: string,         // 트윗의 twitter unique key
+          text: string        // 트윗 텍스트 전문 (이미지 링크 포함)
+        }
+      ],
+      errors: [
+        {
+          detail: string,
+          value: string,
+          title: string // Authorization Error
+        }
+      ],
+      includes: {
+        users: [
+          {
+            id: string,                 // 사용자의 twitter unique key
+            name: string,               // 사용자가 설정한 닉네임
+            username: string,           // 사용자의 계정 아이디
+            profile_image_url: string,  // 프로필 이미지 (https://pbs.twimg.com/profile_images/로 시작한다)
+          }
+        ]
+      }
+    }
+   */
+  const tweets = await client.tweets.findTweetsById({
+    ids: tweetsId.split(','),
+    expansions: ["author_id"],
+    "user.fields": ["name", "id", "username", "profile_image_url"],
+    "tweet.fields": ["created_at"],
+  });
+
+  res.status(200).send({ tweets });
 
   // Instantiate with desired auth type (here's Bearer v2 auth)
-  const twitterClient = new TwitterApi(REACT_APP_TWITTER_BEARER_TOKEN);
+  // const twitterClient = new TwitterApi(REACT_APP_TWITTER_BEARER_TOKEN);
 
-  // Tell typescript it's a readonly app
-  const readOnlyClient = twitterClient.readOnly;
+  // // Tell typescript it's a readonly app
+  // const readOnlyClient = twitterClient.readOnly;
 
-  const data = await readOnlyClient.v2.singleTweet(
-    '1515224918044004354', // ['1515029025277632512', '1515224918044004354'], //1515224918044004354
-    {
-      expansions: ['referenced_tweets.id', 'referenced_tweets.id.author_id'],
-      "tweet.fields": ['attachments', 'author_id', 'context_annotations', 'conversation_id', 'created_at', 'entities', 'geo', 'id', 'in_reply_to_user_id', 'lang', 'public_metrics', 'edit_controls', 'possibly_sensitive', 'referenced_tweets', 'reply_settings', 'source', 'text', 'withheld']
-    }
-  );
+  // const tweetsId = req.header('tweetsId');
+  // const tweets = await twitterClient.v2.tweets(tweetsId.split(','), {
+  //   expansions: ['author_id', 'in_reply_to_user_id', 'referenced_tweets.id'],
+  //   'tweet.fields': ['created_at', 'referenced_tweets', 'id', 'text', 'entities', 'source'],
+  // });
+  // res.status(200).send({ tweets });
 
-  res.status(200).send({ tweetData: data });
+  // const data = await readOnlyClient.v2.searchAll('conversation_id:1515029025277632512', {
+  //   expansions: ['referenced_tweets.id'],
+  //   "tweet.fields": ['in_reply_to_user_id', 'author_id', 'created_at', 'conversation_id']
+  // });
+
+  // res.status(200).send({ tweets: data.tweets, meta: data.meta });
 
   // const tweetData = await axios({
   //   method: 'get',
@@ -67,7 +100,7 @@ app.get('/getTweets', async (req, res) => {
   //   }
   // });
 
-  // res.status(200).send({ tweetData });
+  // res.status(200).send({ tweets: data });
 });
 
 exports.tweeter = functions.https.onRequest(app);

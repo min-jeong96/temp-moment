@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint",
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
@@ -19,6 +19,7 @@
     "express": "^4.18.2",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
+    "twitter-api-sdk": "^1.2.1",
     "twitter-api-v2": "^1.14.0"
   },
   "devDependencies": {
