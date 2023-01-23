@@ -1,16 +1,59 @@
+const { initializeApp } = require('firebase/app');
+const { getFirestore, doc, getDoc } = require('firebase/firestore')
 const functions = require("firebase-functions");
+
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
 const { TwitterApi } = require('twitter-api-v2');
 const { Client, auth } = require('twitter-api-sdk');
+const fs = require("fs");
+
+const admin = initializeApp({
+  apiKey: "AIzaSyDwaSdt0jnERoYlWybRNOdBKOoaF_a9MXQ",
+  authDomain: "temp-moment.firebaseapp.com",
+  projectId: "temp-moment",
+  storageBucket: "temp-moment.appspot.com",
+  messagingSenderId: "655905958144",
+  appId: "1:655905958144:web:dea372431399a8c3022be5",
+  measurementId: "G-8RQGZC2KGH"
+});
+const firestore = getFirestore(admin);
 
 const app = express();
 app.use(cors({origin: true}));
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
+
+app.get('/:user/:id', async (req, res) => {
+  const {user, id} = req.params;
+  
+  const docRef = doc(firestore, 'moments', `${user}:${id}`);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    fs.readFile('./index.html', 'utf8', (err, htmlString) => {
+      if (err) {
+        res.status(404).send();
+        return;
+      }
+
+      res.set('Content-Type', 'text/html');
+      const replacedHTML = htmlString.replace('<title>TEMP MOMENT</title>',
+        `
+          <meta property="og:title" content="${docSnap.data().title} by @${user}" />
+          <meta property="og:description" content="${docSnap.data().description}"/>
+          <title>${docSnap.data().title} / temp-moment</title>
+        `
+      );
+      res.status(200).send(replacedHTML);
+    });
+  } else {
+    res.status(404).send();
+  }
+});
 
 app.options('/getTweets', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*');
