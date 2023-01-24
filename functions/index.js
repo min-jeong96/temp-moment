@@ -29,30 +29,56 @@ app.use(cors({origin: true}));
 
 app.get('/:user/:id', async (req, res) => {
   const {user, id} = req.params;
+
+  axios.get(`https://firestore.googleapis.com/v1/projects/temp-moment/databases/(default)/documents/moments/${user}:${id}`)
+    .then((doc) => {
+      fs.readFile('./index.html', 'utf8', (err, htmlString) => {
+        if (err) {
+          res.status(404).send('readFile error');
+          return;
+        }
   
-  const docRef = doc(firestore, 'moments', `${user}:${id}`);
-  const docSnap = await getDoc(docRef);
+        res.set('Content-Type', 'text/html');
+        const replacedHTML = htmlString.replace('<title>TEMP MOMENT</title>',
+          `
+            <meta property="og:title" content="${doc.data.fields.title.stringValue} by @${user}" />
+            <meta property="og:description" content="${doc.data.fields.description.stringValue}"/>
+            <meta property="og:url" content="https://temp-momen.web.app/${user}/${id}" />
+            <title>${doc.data.fields.title.stringValue} by @${user}</title>
+          `
+        );
+        res.status(200).send(replacedHTML);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(404).send('axios get error');
+    })
+  
+  // const docRef = doc(firestore, 'moments', `${user}:${id}`);
+  // const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    fs.readFile('./index.html', 'utf8', (err, htmlString) => {
-      if (err) {
-        res.status(404).send();
-        return;
-      }
+  // if (docSnap.exists()) {
+  //   fs.readFile('./index.html', 'utf8', (err, htmlString) => {
+  //     if (err) {
+  //       res.status(404).send();
+  //       return;
+  //     }
 
-      res.set('Content-Type', 'text/html');
-      const replacedHTML = htmlString.replace('<title>TEMP MOMENT</title>',
-        `
-          <meta property="og:title" content="${docSnap.data().title} by @${user}" />
-          <meta property="og:description" content="${docSnap.data().description}"/>
-          <title>${docSnap.data().title} / temp-moment</title>
-        `
-      );
-      res.status(200).send(replacedHTML);
-    });
-  } else {
-    res.status(404).send();
-  }
+  //     res.set('Content-Type', 'text/html');
+  //     const replacedHTML = htmlString.replace('<title>TEMP MOMENT</title>',
+  //       `
+  //         <meta property="og:title" content="${docSnap.data().title} by @${user}" />
+  //         <meta property="og:description" content="${docSnap.data().description}"/>
+  //         <meta property="og:url" content="https://temp-momen.web.app/${user}/${id}" />
+  //         <title>${docSnap.data().title} / temp-moment</title>
+  //       `
+  //     );
+  //     res.status(200).send(replacedHTML);
+  //   });
+  // } else {
+  //   res.status(404).send();
+  // }
 });
 
 app.options('/getTweets', (req, res) => {
