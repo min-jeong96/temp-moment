@@ -1,12 +1,11 @@
 const { initializeApp } = require('firebase/app');
-const { getFirestore, doc, getDoc } = require('firebase/firestore')
+const { getFirestore } = require('firebase/firestore')
 const functions = require("firebase-functions");
 
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
-const { TwitterApi } = require('twitter-api-v2');
 const { Client, auth } = require('twitter-api-sdk');
 const fs = require("fs");
 
@@ -53,32 +52,7 @@ app.get('/:user/:id', async (req, res) => {
     .catch((error) => {
       console.error(error);
       res.status(404).send('axios get error');
-    })
-  
-  // const docRef = doc(firestore, 'moments', `${user}:${id}`);
-  // const docSnap = await getDoc(docRef);
-
-  // if (docSnap.exists()) {
-  //   fs.readFile('./index.html', 'utf8', (err, htmlString) => {
-  //     if (err) {
-  //       res.status(404).send();
-  //       return;
-  //     }
-
-  //     res.set('Content-Type', 'text/html');
-  //     const replacedHTML = htmlString.replace('<title>TEMP MOMENT</title>',
-  //       `
-  //         <meta property="og:title" content="${docSnap.data().title} by @${user}" />
-  //         <meta property="og:description" content="${docSnap.data().description}"/>
-  //         <meta property="og:url" content="https://temp-momen.web.app/${user}/${id}" />
-  //         <title>${docSnap.data().title} / temp-moment</title>
-  //       `
-  //     );
-  //     res.status(200).send(replacedHTML);
-  //   });
-  // } else {
-  //   res.status(404).send();
-  // }
+    });
 });
 
 app.options('/getTweets', (req, res) => {
@@ -95,11 +69,6 @@ app.get('/getTweets', async(req, res) => {
   console.log(functions.config())
 
   const client = new Client(req.header('Authorization'));
-  // const tweets = await client.tweets.tweetsRecentSearch({
-  //   query: 'conversation_id:1597956724375580672',
-  //   expansions: ['referenced_tweets.id'],
-  //   'tweet.fields': ['id', 'text', 'created_at', 'referenced_tweets']
-  // });
 
   const tweetsId = req.header('tweetsId');
   /* twitter API v2 GET /tweets data format ▼ 더보기
@@ -140,36 +109,6 @@ app.get('/getTweets', async(req, res) => {
   });
 
   res.status(200).send({ tweets });
-
-  // Instantiate with desired auth type (here's Bearer v2 auth)
-  // const twitterClient = new TwitterApi(REACT_APP_TWITTER_BEARER_TOKEN);
-
-  // // Tell typescript it's a readonly app
-  // const readOnlyClient = twitterClient.readOnly;
-
-  // const tweetsId = req.header('tweetsId');
-  // const tweets = await twitterClient.v2.tweets(tweetsId.split(','), {
-  //   expansions: ['author_id', 'in_reply_to_user_id', 'referenced_tweets.id'],
-  //   'tweet.fields': ['created_at', 'referenced_tweets', 'id', 'text', 'entities', 'source'],
-  // });
-  // res.status(200).send({ tweets });
-
-  // const data = await readOnlyClient.v2.searchAll('conversation_id:1515029025277632512', {
-  //   expansions: ['referenced_tweets.id'],
-  //   "tweet.fields": ['in_reply_to_user_id', 'author_id', 'created_at', 'conversation_id']
-  // });
-
-  // res.status(200).send({ tweets: data.tweets, meta: data.meta });
-
-  // const tweetData = await axios({
-  //   method: 'get',
-  //   url: `https://api.twitter.com/2/tweets/1515224918044004354?expansions=attachments.media_keys,referenced_tweets.id,author_id`,
-  //   headers: {
-  //     Authorization: `Bearer ${REACT_APP_TWITTER_BEARER_TOKEN}`
-  //   }
-  // });
-
-  // res.status(200).send({ tweets: data });
 });
 
 exports.tweeter = functions.https.onRequest(app);
