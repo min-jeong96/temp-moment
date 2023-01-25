@@ -1,5 +1,3 @@
-const { initializeApp } = require('firebase/app');
-const { getFirestore } = require('firebase/firestore')
 const functions = require("firebase-functions");
 
 const express = require("express");
@@ -8,17 +6,6 @@ const axios = require("axios");
 
 const { Client, auth } = require('twitter-api-sdk');
 const fs = require("fs");
-
-const admin = initializeApp({
-  apiKey: "AIzaSyDwaSdt0jnERoYlWybRNOdBKOoaF_a9MXQ",
-  authDomain: "temp-moment.firebaseapp.com",
-  projectId: "temp-moment",
-  storageBucket: "temp-moment.appspot.com",
-  messagingSenderId: "655905958144",
-  appId: "1:655905958144:web:dea372431399a8c3022be5",
-  measurementId: "G-8RQGZC2KGH"
-});
-const firestore = getFirestore(admin);
 
 const app = express();
 app.use(cors({origin: true}));
@@ -66,7 +53,6 @@ app.options('/getTweets', (req, res) => {
 
 app.get('/getTweets', async(req, res) => {
   console.log('getTweets');
-  console.log(functions.config())
 
   const client = new Client(req.header('Authorization'));
 
@@ -103,9 +89,10 @@ app.get('/getTweets', async(req, res) => {
    */
   const tweets = await client.tweets.findTweetsById({
     ids: tweetsId.split(','),
-    expansions: ["author_id"],
+    expansions: ["attachments.media_keys", "author_id"],
     "user.fields": ["name", "id", "username", "profile_image_url"],
     "tweet.fields": ["created_at"],
+    "media.fields": ["type", "url", "preview_image_url", "alt_text"]
   });
 
   res.status(200).send({ tweets });

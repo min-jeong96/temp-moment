@@ -5,14 +5,13 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import { getMomentData } from '../api/firestore.js';
-import { TwitterTweetEmbed } from 'react-twitter-embed';
 
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import IosShareIcon from '@mui/icons-material/IosShare';
-import TwitterIcon from '@mui/icons-material/Twitter';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
+import { EmbeddedTweets } from '../components/EmbeddedTweets.js'
 
 import './moment.css';
 
@@ -50,38 +49,16 @@ export function Moment(props) {
       // tweet data 가져오기
       const response = await axios({
         method: 'get',
-        url: 'https://us-central1-temp-moment.cloudfunctions.net/tweeter/getTweets', // `http://127.0.0.1:5001/temp-moment/us-central1/tweeter/getTweets`,
+        url: 'https://us-central1-temp-moment.cloudfunctions.net/tweeter/getTweets',
+        // url: 'http://127.0.0.1:5001/temp-moment/us-central1/tweeter/getTweets',
         headers: {
           Authorization: `${process.env.REACT_APP_TWITTER_BEARER_TOKEN}`,
           tweetsId: tweetsId
         }
       });
-      console.log(response.data);
 
-      const tweetsFromTwitterAPI = momentDataFromFirestore.tweets.map((tweet) => {
-        let tweetId = getTweetId(tweet);
-        let tweetData = response.data.tweets.data.find(d => d.id === tweetId);
-
-        if (tweetData) {
-          let userData = response.data.tweets.includes.users.find(user => user.id);
-          
-          return {
-            isValidData: true,
-            user_name: userData.name,
-            user_Id: userData.username,
-            user_profile: userData.profile_image_url,
-            created_at: new Date(tweetData.created_at),
-            id: tweetId,
-            text: tweetData.text,
-            url: tweet
-          }
-        } else {
-          return {
-            isValidData: false,
-            id: tweetId
-          }
-        }
-      });
+      // tweet data 전처리
+      const tweetsFromTwitterAPI = preprocessTweetData(momentDataFromFirestore.tweets, response.data.tweets);
       setTweets(tweetsFromTwitterAPI);
     }
     fetch();
@@ -92,9 +69,10 @@ export function Moment(props) {
       <div className='toolbar'>
         <div className='title'>{momentData.title}</div>
         <ButtonGroup className='buttons'>
-          {/* <IconButton aria-label="share" onClick={() => { share() }}>
-            <IosShareIcon color={isOSDarkMode ? 'primary' : 'info'}/> <- TODO: ios safari not work
-          </IconButton> */}
+          <IconButton aria-label="share" onClick={() => { share() }}>
+            {/* TODO: ios safari not work */}
+            <IosShareIcon color={isOSDarkMode ? 'primary' : 'info'}/>
+          </IconButton>
           <IconButton aria-label="etc functions" disabled>
             <MoreHorizIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
@@ -109,69 +87,52 @@ export function Moment(props) {
           </time>
         </div>
       </div>
-      <div className='tweets'>
-        { // TODO: 다운로드 시간 너무 길고 resources 크기가 너무 큼.
-          // momentData.tweets.map((tweet) => {
-          //   return (
-          //     <div className='tweet' key={getTweetId(tweet)}>
-          //       <TwitterTweetEmbed
-          //         tweetId={getTweetId(tweet)}
-          //         placeholder={<div>Loading</div>}
-          //         options={{ theme: isOSDarkMode ? 'dark' : 'light' }} />
-          //     </div>
-          //   );
-          // })
-          <EmbeddedTweets tweets={tweets} />
-        }
-      </div>
+      <EmbeddedTweets tweets={tweets} />
     </div>
   )
 }
 
-function EmbeddedTweets(props) {
-  if (props.tweets.length === 0) {
-    return (
-      <div>Loading...</div>
-    )
-  } else {
-    return (
-      props.tweets.map((tweet) => {
-        if (tweet.isValidData) {
-          return (
-            <div className='tweet' key={tweet.id}>
-              <img className='user-profile' alt='user-profile' src={tweet.user_profile} />
-              <div>
-                <div className='user-info'>
-                  <span className='name'>{tweet.user_name}</span>
-                  <span className='id'>@{tweet.user_Id}</span>
-                </div>
-                <div className='text'>{tweet.text}</div>
-                <time className='created-at' dateTime={tweet.created_at}>
-                  {`${tweet.created_at.toLocaleDateString('ko-kr', { year: 'numeric', month: 'long', day: 'numeric' })} ${tweet.created_at.toLocaleTimeString('ko-kr')}`}
-                </time>
-                <Button
-                  variant="outlined" endIcon={<TwitterIcon />}
-                  onClick={() => {toTwitter(tweet.url)}}>
-                  트위터로 이동
-                </Button>
-              </div>
-            </div>
-          )
-        } else {
-          return (
-            <div className='tweet error' key={tweet.id}>
-              <div className='text'>권한 오류</div>
-            </div>
-          )
-        }
-      })
-    )
-  }
+function preprocessTweetData(momentTweets, apiTweets) {
+  const tweetsFromTwitterAPI = momentTweets.map((tweet) => {
+    let tweetId = getTweetId(tweet);
+    let tweetData = apiTweets.data.find(d => d.id === tweetId);
 
-  function toTwitter(url) {
-    console.log(url);
-    window.open(url);
-  }
+    if (tweetData) {
+      let userData = apiTweets.includes.users.find(user => user.id === tweetData.author_id);
+      
+      let tweetObj = {
+        isValidData: true,
+        user_name: userData.name,
+        user_Id: userData.username,
+        user_profile: userData.profile_image_url,
+        created_at: new Date(tweetData.created_at),
+        id: tweetId,
+        text: tweetData.text,
+        url: tweet,
+        attachments: []
+      };
+
+      if (tweetData['attachments']) {
+        for (let mediaKey of tweetData['attachments'].media_keys) {
+          let mediaData = apiTweets.includes.media.find(attachment => attachment.media_key === mediaKey);
+          tweetObj['attachments'].push({
+            key: mediaKey,
+            url: mediaData.url ? mediaData.url : mediaData.preview_image_url,
+            alt: mediaData.alt_text
+          });
+        }
+      }
+
+      return tweetObj;
+    } else {
+      return {
+        isValidData: false,
+        id: tweetId
+      }
+    }
+  });
+
+  return tweetsFromTwitterAPI;
 }
 
 function getTweetId(url) {

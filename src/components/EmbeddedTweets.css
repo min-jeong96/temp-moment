@@ -1,0 +1,62 @@
+.tweets {
+  padding: 12px 16px;
+}
+@media (max-width: 768px) {
+  .tweets {
+    padding: 0 16px 16px;
+  }
+}
+@media (max-width: 340px) {
+  .tweets {
+    padding: 0 8px;
+  }
+}
+
+.tweet {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--sub-text);
+}
+.tweet > .user-profile {
+  margin: 8px 16px 0 0;
+  border-radius: 50%;
+}
+.tweet .user-info {
+  margin: 0 0 8px;
+}
+.tweet .user-info .name {
+  margin: 0 8px 0 0;
+  font-weight: bold;
+}
+.tweet .user-info .id {
+  color: var(--sub-text);
+}
+.tweet .text {
+  white-space: break-spaces;
+}
+.tweet .created-at {
+  display: block;
+  margin: 16px 0;
+  color: var(--sub-text);
+}
+.tweet .attachments {
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
+}
+.tweet .attachments > img {
+  width: calc(100% / var(--n));
+  max-width: 100%;
+  margin: 16px 0 0;
+  object-fit: cover;
+}
+
+.tweet.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tweet.error .text {
+  margin: 0 0 0 8px;
+}
