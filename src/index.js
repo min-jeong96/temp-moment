@@ -7,6 +7,7 @@ import {
 import { Main } from './pages/main.js';
 import { Moment } from './pages/moment.js';
 import { ErrorPage } from './pages/error.js';
+import { CreatePage } from './pages/create.js';
 
 import reportWebVitals from './reportWebVitals';
 import './index.css';
@@ -20,8 +21,13 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: 'create',
+        element: <CreatePage />,
+      },
+      {
         path: ':user/:id',
         element: <Moment />,
+        errorElement: <ErrorPage />,
       }
     ]
   }

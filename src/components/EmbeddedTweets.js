@@ -8,7 +8,7 @@ import './EmbeddedTweets.css';
 export function EmbeddedTweets(props) {
   if (props.tweets.length === 0) {
     return (
-      <div>Loading...</div>
+      <div className='loading'>Loading...</div>
     )
   } else {
     return (

@@ -3,13 +3,12 @@ import './error.css';
 
 export function ErrorPage(props) {
   const error = useRouteError();
-  const { status, statusText, data } = error;
+  console.log(error);
 
   return (
     <div>
-      <h1>{status}</h1>
-      <h2>{statusText}</h2>
-      <p>{data}</p>
+      <h1>{error.status}</h1>
+      <h2>{error.message}</h2>
     </div>
   );
 }
