@@ -160,9 +160,15 @@ function getTweetId(url) {
   return id;
 }
 
+// TODO: react mui alert로 교체
 function share() {
   // console.log(window.location.href);
   navigator.clipboard.writeText(window.location.href)
-    .then(() => { console.log('Text copied to clipboard...') })
-    .catch((error) => { console.error(error) });
+    .then(() => {
+      alert('Text copied to clipboard...');
+    })
+    .catch((error) => {
+      console.error(error);
+      alert('ERR: Text not copied');
+    });
 }
