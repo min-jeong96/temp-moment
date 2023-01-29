@@ -11,7 +11,8 @@ import IconButton from '@mui/material/IconButton';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-import { EmbeddedTweets } from '../components/EmbeddedTweets.js'
+import { EmbeddedTweets } from '../components/EmbeddedTweets.js';
+import { AlertSnackbar } from '../components/AlertSnackbar.js';
 
 import './moment.css';
 
@@ -25,6 +26,13 @@ export function Moment(props) {
     tweets: []          // 트윗 목록
   });
   const [tweets, setTweets] = useState([]);
+
+  // alert 출력 상태
+  const [alert, setAlert] = useState({
+    timestamp: null,
+    severity: null, // error | warning | info | success
+    message: ''
+  });
 
   const isOSDarkMode = useMediaQuery({
     query: '(prefers-color-scheme: dark)',
@@ -84,8 +92,28 @@ export function Moment(props) {
       </div>
       <MomentHeader momentData={momentData} user={user} />
       <EmbeddedTweets tweets={tweets} />
+      <AlertSnackbar alert={alert}/>
     </div>
   )
+
+  function share() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => {
+      setAlert({
+        timestamp: Date.now(),
+        severity: 'success',
+        message: 'Text copied to clipboard...'
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      setAlert({
+        timestamp: Date.now(),
+        severity: 'error',
+        message: 'ERR: Text not copied...'
+      });
+    });
+  }
 }
 
 function MomentHeader(props) {
@@ -158,17 +186,4 @@ function getTweetId(url) {
   // id filtering
   let id = urlPath.split('/')[urlPath.split('/').length - 1];
   return id;
-}
-
-// TODO: react mui alert로 교체
-function share() {
-  // console.log(window.location.href);
-  navigator.clipboard.writeText(window.location.href)
-    .then(() => {
-      alert('Text copied to clipboard...');
-    })
-    .catch((error) => {
-      console.error(error);
-      alert('ERR: Text not copied');
-    });
 }
