@@ -33,19 +33,19 @@ export function CreatePage(props) {
   const [inputError, setInputError] = useState({
     user: {
       status: false,
-      text: '영문자, 숫자, _로 이루어져야 합니다.'
+      text: ''
     },
     id: {
       status: false,
-      text: '영문자, 숫자, _로 이루어져야 합니다.'
+      text: ''
     },
     password: {
       status: false,
-      text: '6자 이상이어야 합니다.'
+      text: ''
     },
     passwordReEntered: {
       status: false,
-      text: '입력한 비밀번호와 일치하지 않습니다.'
+      text: ''
     }
   });
 
@@ -110,10 +110,12 @@ export function CreatePage(props) {
     
     let newInputError = {...inputError};
     newInputError[state].status = getErrorStatus(event.target.value, state);
+    newInputError[state].text = getErrorText(event.target.value, state);
 
     // 비밀번호 일치 여부
     if (state === 'password') {
       newInputError['passwordReEntered'].status = getErrorStatus(passwordReEntered, 'passwordReEntered', event.target.value);
+      newInputError['passwordReEntered'].text = getErrorText(passwordReEntered, 'passwordReEntered', event.target.value);
     }
 
     setInputError(newInputError);
@@ -127,7 +129,21 @@ export function CreatePage(props) {
       case 'password':
         return txt.length < 6;
       case 'passwordReEntered':
-        return pw ? txt !== pw : txt !== password; 
+        return pw ? txt && txt !== pw :  txt !== password; 
+      default:
+        return false;
+    }
+  }
+
+  function getErrorText(txt, state, pw) {
+    switch (state) {
+      case 'user':
+      case 'id':
+        return getErrorStatus(txt, state, pw) ? '영문자, 숫자, _로 이루어져야 합니다.' : '';
+      case 'password':
+        return getErrorStatus(txt, state, pw) ? '6자 이상이어야 합니다.' : '';
+      case 'passwordReEntered':
+        return getErrorStatus(txt, state, pw) ? '입력한 비밀번호와 일치하지 않습니다.' : '';
       default:
         return false;
     }

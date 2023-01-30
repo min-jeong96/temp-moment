@@ -2,13 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
 }
 .container > .card {
   margin: 20px;
   padding: 20px;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
   border: 1px solid var(--sub-text);
   border-radius: 20px;
 }
