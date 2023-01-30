@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.container > .card {
+  margin: 20px;
+  padding: 20px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  border: 1px solid var(--sub-text);
+  border-radius: 20px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.description > p {
+  margin: 8px 0;
+}
+
+.warnings {
+  margin: 16px 0;
+  padding: 0 0 0 16px;
+  list-style-type: '\26A0';
+  color: var(--sub-text);
+}
+.warnings > li {
+  margin: 4px 0;
+  padding: 0 0 0 8px;
+}
+.warnings > li > span {
+  color: var(--text);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
