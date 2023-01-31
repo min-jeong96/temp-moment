@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDwaSdt0jnERoYlWybRNOdBKOoaF_a9MXQ",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "temp-moment.firebaseapp.com",
   projectId: "temp-moment",
   storageBucket: "temp-moment.appspot.com",
