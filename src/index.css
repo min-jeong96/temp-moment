@@ -39,6 +39,7 @@ code {
 }
 
 .container {
+  display: block;
   width: 100%;
   max-width: 600px;
 }

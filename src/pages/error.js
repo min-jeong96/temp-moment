@@ -3,7 +3,7 @@ import './error.css';
 
 export function ErrorPage(props) {
   const error = useRouteError();
-  console.log(error);
+  console.error(error);
 
   return (
     <div>

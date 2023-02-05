@@ -59,8 +59,8 @@ export function Moment(props) {
       // tweet data 가져오기
       axios({
         method: 'get',
-        url: 'https://us-central1-temp-moment.cloudfunctions.net/tweeter/getTweets',
-        // url: 'http://127.0.0.1:5001/temp-moment/us-central1/tweeter/getTweets',
+        // url: 'https://us-central1-temp-moment.cloudfunctions.net/tweeter/getTweets',
+        url: 'http://127.0.0.1:5001/temp-moment/us-central1/tweeter/getTweets',
         headers: {
           Authorization: `${process.env.REACT_APP_TWITTER_BEARER_TOKEN}`,
           tweetsId: tweetsId

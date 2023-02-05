@@ -8,6 +8,7 @@ import { Main } from './pages/main.js';
 import { Moment } from './pages/moment.js';
 import { ErrorPage } from './pages/error.js';
 import { CreatePage } from './pages/create.js';
+import { EditIndexPage } from './pages/edit/index.js';
 
 import reportWebVitals from './reportWebVitals';
 import './index.css';
@@ -25,10 +26,14 @@ const router = createBrowserRouter([
         element: <CreatePage />,
       },
       {
+        path: 'edit',
+        element: <EditIndexPage />,
+      },
+      {
         path: ':user/:id',
         element: <Moment />,
         errorElement: <ErrorPage />,
-      }
+      },
     ]
   }
 ]);

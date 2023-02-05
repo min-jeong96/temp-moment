@@ -8,6 +8,7 @@ import './main.css';
 
 import { Moment } from './moment.js';
 import { CreatePage } from './create.js';
+import { EditIndexPage } from './edit/index.js';
 
 export function Main(props) {
   const params = useParams();
@@ -24,6 +25,9 @@ export function Main(props) {
       <Route
         path='/create'
         element={<CreatePage />} />
+      <Route
+        path='/edit'
+        element={<EditIndexPage />} />
       <Route
         path='/:user/:id'
         element={<Moment />} />

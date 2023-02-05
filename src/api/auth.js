@@ -4,9 +4,9 @@ import { getPasswordCode } from './firestore.js';
 import sha256 from 'js-sha256';
 
 // Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
-function signInFirebaseAuth() {
+export function signInFirebaseAuth() {
   return new Promise((resolve, reject) => {
     signInAnonymously(auth)
       .then((user) => {
@@ -18,7 +18,7 @@ function signInFirebaseAuth() {
   });
 }
 
-function signOutFirebaseAuth() {
+export function signOutFirebaseAuth() {
   return new Promise((resolve, reject) => {
     signOut(auth)
       .then(() => {
@@ -30,7 +30,7 @@ function signOutFirebaseAuth() {
   });
 }
 
-async function login(user, id, password) {
+export async function login(user, id, password) {
   let encoded;
 
   try {
@@ -49,9 +49,7 @@ async function login(user, id, password) {
   }
 }
 
-async function logout() {
+export async function logout() {
   const result = await signOutFirebaseAuth();
   console.log('logout:', result);
 }
-
-export { auth, login, logout };

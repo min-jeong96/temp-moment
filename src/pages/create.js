@@ -1,9 +1,14 @@
 import './create.css';
 
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+import { isExistedMoment, createMoment } from '../api/firestore.js';
+import { AlertSnackbar } from '../components/AlertSnackbar.js';
 
 const InputTextField = styled(TextField)({
   margin: '16px 0 0',
@@ -25,10 +30,20 @@ const InputTextField = styled(TextField)({
 });
 
 export function CreatePage(props) {
+  const navigate = useNavigate();
+
+  // 모멘트 생성에 필요한 정보
   const [user, setUser] = useState('');
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordReEntered, setPasswordReEntered] = useState('');
+
+  // alert 출력 상태
+  const [alert, setAlert] = useState({
+    timestamp: null,
+    severity: null, // error | warning | info | success
+    message: ''
+  });
 
   const [inputError, setInputError] = useState({
     user: {
@@ -63,6 +78,10 @@ export function CreatePage(props) {
           <li>한 트위터 ID에 동일한 모멘트 ID로 2개 이상 모멘트를 생성할 수 없습니다.</li>
           <li><span>비밀번호 찾기 및 재설정 기능이 없습니다.</span> 비밀번호 분실 시 모멘트 수정 및 삭제가 불가능합니다. 설정 시 유의해 주세요.</li>
         </ul>
+        <div className='url'>
+          <p>생성될 모멘트의 URL</p>
+          <p><span>https://temp-moment.web.app</span><wbr/>/{user}<wbr/>/{id}</p>
+        </div>
         <div className='form'>
           <InputTextField
             id='moment-user'
@@ -102,9 +121,40 @@ export function CreatePage(props) {
             helperText={inputError.passwordReEntered.text} />
         </div>
       </div>
+      <div className='button-container'>
+        <Button
+          className='button'
+          fullWidth
+          variant='contained'
+          sx={{ // disabled 다크모드 스타일링 지원
+            '&.Mui-disabled': {
+              background: 'var(--sub-text)',
+              color: 'var(--background)'
+            }
+          }}
+          disabled={disabledCreateButton()}
+          onClick={() => create()} >
+            모멘트 생성
+        </Button>
+      </div>
+      <AlertSnackbar alert={alert} />
     </div>
   )
 
+  /**
+   * 모멘트 생성 버튼 disabled 로직
+   * @returns {boolean} disabled
+   */
+  function disabledCreateButton() {
+    let hasInputError = Object.values(inputError).includes(error => error.status);
+    let hasEmptyInput = [user, id, password, passwordReEntered].includes('');
+
+    return hasInputError || hasEmptyInput; 
+  }
+
+  /**
+   * input 텍스트 수정 시 state 처리, text error field 핸들링
+   */
   function handleTextFieldChange(event, state, setter) {
     setter(event.target.value);
     
@@ -121,6 +171,10 @@ export function CreatePage(props) {
     setInputError(newInputError);
   }
 
+  /**
+   * 특정 텍스트 필드의 에러 발생 여부 반환
+   * @returns {boolean} isError
+   */
   function getErrorStatus(txt, state, pw) {
     switch (state) {
       case 'user':
@@ -129,12 +183,16 @@ export function CreatePage(props) {
       case 'password':
         return txt.length < 6;
       case 'passwordReEntered':
-        return pw ? txt && txt !== pw :  txt !== password; 
+        return pw ? txt !== '' && txt !== pw :  txt !== password; 
       default:
         return false;
     }
   }
 
+  /**
+   * 특정 텍스트 필드의 에러 발생 시 안내 텍스트 반환
+   * @returns {string} helperText
+   */
   function getErrorText(txt, state, pw) {
     switch (state) {
       case 'user':
@@ -145,7 +203,44 @@ export function CreatePage(props) {
       case 'passwordReEntered':
         return getErrorStatus(txt, state, pw) ? '입력한 비밀번호와 일치하지 않습니다.' : '';
       default:
-        return false;
+        return '';
+    }
+  }
+
+  /**
+   * 모멘트 생성 로직
+   */
+  async function create() {
+    try {
+      // 존재하는 경로일 경우 핸들링
+      const isMomentExisted = await isExistedMoment(user, id);
+      if (isMomentExisted) {
+        setAlert({
+          timestamp: Date.now(),
+          severity: 'error',
+          message: `이미 모멘트가 생성된 경로입니다.`
+        });
+        return;
+      }
+
+      // 모멘트 페이지 생성
+      await createMoment(user, id, password);
+
+      setAlert({
+        timestamp: Date.now(),
+        severity: 'success',
+        message: '모멘트 생성! 편집 페이지로 이동합니다...'
+      });
+      setTimeout(() => {
+        navigate('/edit');
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      setAlert({
+        timestamp: Date.now(),
+        severity: 'error',
+        message: '내부적인 오류로 생성 불가'
+      });
     }
   }
 }
