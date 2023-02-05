@@ -89,17 +89,20 @@ app.get('/getTweets', async(req, res) => {
    */
 
   const tweetsId = req.header('tweetsId');
+  if (tweetsId === '') {
+    res.status(200).send({ tweets: [] });
+  } else {
+    const client = new Client(req.header('Authorization'));
+    const tweets = await client.tweets.findTweetsById({
+      ids: tweetsId.split(','),
+      expansions: ["attachments.media_keys", "author_id"],
+      "user.fields": ["name", "id", "username", "profile_image_url"],
+      "tweet.fields": ["created_at"],
+      "media.fields": ["type", "url", "preview_image_url", "alt_text"]
+    });
 
-  const client = new Client(req.header('Authorization'));
-  const tweets = await client.tweets.findTweetsById({
-    ids: tweetsId.split(','),
-    expansions: ["attachments.media_keys", "author_id"],
-    "user.fields": ["name", "id", "username", "profile_image_url"],
-    "tweet.fields": ["created_at"],
-    "media.fields": ["type", "url", "preview_image_url", "alt_text"]
-  });
-
-  res.status(200).send({ tweets });
+    res.status(200).send({ tweets });
+  }
 });
 
 exports.tweeter = functions.https.onRequest(app);
