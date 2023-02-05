@@ -8,7 +8,10 @@ const { Client, auth } = require('twitter-api-sdk');
 const fs = require("fs");
 
 const app = express();
-app.use(cors({origin: true}));
+app.use(cors({
+  origin: '*', // 출처 허용 옵션
+  credential: true, // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
+}));
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
@@ -54,9 +57,6 @@ app.options('/getTweets', (req, res) => {
 app.get('/getTweets', async(req, res) => {
   console.log('getTweets');
 
-  const client = new Client(req.header('Authorization'));
-
-  const tweetsId = req.header('tweetsId');
   /* twitter API v2 GET /tweets data format ▼ 더보기
     retur type
     tweets: {
@@ -87,6 +87,10 @@ app.get('/getTweets', async(req, res) => {
       }
     }
    */
+
+  const tweetsId = req.header('tweetsId');
+
+  const client = new Client(req.header('Authorization'));
   const tweets = await client.tweets.findTweetsById({
     ids: tweetsId.split(','),
     expansions: ["attachments.media_keys", "author_id"],
