@@ -51,27 +51,28 @@ export function Moment(props) {
         throw new Response('존재하지 않는 모멘트 URL입니다.', { status: 404 });
       }
 
-      // 트윗 id 목록 request로 보낼 string화
-      const tweetsId= momentDataFromFirestore.tweets
-                        .map(tweet => getTweetId(tweet))
-                        .join(',');
+      // // 트윗 id 목록 request로 보낼 string화
+      // const tweetsId= momentDataFromFirestore.tweets
+      //                   .map(tweet => getTweetId(tweet))
+      //                   .join(',');
 
-      // tweet data 가져오기
-      axios({
-        method: 'get',
-        // url: 'https://us-central1-temp-moment.cloudfunctions.net/tweeter/getTweets',
-        url: 'http://127.0.0.1:5001/temp-moment/us-central1/tweeter/getTweets',
-        headers: {
-          Authorization: `${process.env.REACT_APP_TWITTER_BEARER_TOKEN}`,
-          tweetsId: tweetsId
-        }
-      })
-        .then((response) => {
-          // tweet data 전처리
-          const tweetsFromTwitterAPI = preprocessTweetData(momentDataFromFirestore.tweets, response.data.tweets);
-          setTweets(tweetsFromTwitterAPI);
-        })
-        .catch((error) => handleAxiosError(error));
+      // // tweet data 가져오기
+      // axios({
+      //   method: 'get',
+      //   // url: 'https://us-central1-temp-moment.cloudfunctions.net/tweeter/getTweets',
+      //   url: 'http://127.0.0.1:5001/temp-moment/us-central1/tweeter/getTweets',
+      //   headers: {
+      //     Authorization: `${process.env.REACT_APP_TWITTER_BEARER_TOKEN}`,
+      //     tweetsId: tweetsId
+      //   }
+      // })
+      //   .then((response) => {
+      //     // tweet data 전처리
+      //     const tweetsFromTwitterAPI = preprocessTweetData(momentDataFromFirestore.tweets, response.data.tweets);
+      //     setTweets(tweetsFromTwitterAPI);
+      //     console.log(tweetsFromTwitterAPI);
+      //   })
+      //   .catch((error) => handleAxiosError(error));
     }
     fetch();
   }, []);
