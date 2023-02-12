@@ -8,7 +8,7 @@ import './EmbeddedTweets.css';
 export function EmbeddedTweets(props) {
   if (props.tweets.length === 0) {
     return (
-      <div className='loading'>Loading...</div>
+      <div className='loading'>트위터 API 유료화 대응 중...</div>
     )
   } else {
     return (
