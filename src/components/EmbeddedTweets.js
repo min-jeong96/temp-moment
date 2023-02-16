@@ -35,7 +35,7 @@ function EmbeddedTweet(props) {
         <div>
           <div className='user-info'>
             <span className='name'>{tweet.user_name}</span>
-            <span className='id'>@{tweet.user_Id}</span>
+            <span className='id'>@{tweet.user_id}</span>
           </div>
           <div className='text'>{convertText(tweet.text)}</div>
           <div className='attachments' style={{'--n': tweet.attachments.length}}>
