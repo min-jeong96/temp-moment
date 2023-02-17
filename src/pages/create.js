@@ -1,12 +1,10 @@
 import './create.css';
 
 import { useState } from 'react';
-
-import Button from '@mui/material/Button';
-
 import { isExistedMoment, createMoment } from '../api/firestore.js';
 import { AlertSnackbar } from '../components/AlertSnackbar.js';
 import { InputTextField } from '../components/InputTextField.js';
+import { BasicButton } from '../components/BasicButton.js';
 
 export function CreatePage(props) {
 
@@ -100,20 +98,14 @@ export function CreatePage(props) {
         </div>
       </div>
       <div className='button-container'>
-        <Button
+        <BasicButton
           className='button'
           fullWidth
           variant='contained'
-          sx={{ // disabled 다크모드 스타일링 지원
-            '&.Mui-disabled': {
-              background: 'var(--sub-text)',
-              color: 'var(--background)'
-            }
-          }}
           disabled={disabledCreateButton()}
           onClick={() => create()} >
             모멘트 생성
-        </Button>
+        </BasicButton>
       </div>
       <AlertSnackbar alert={alert} />
     </div>

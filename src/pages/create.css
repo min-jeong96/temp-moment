@@ -57,6 +57,7 @@
   width: calc(100% - 32px);
   max-width: 560px;
   padding: 0 0 20px;
+  margin: 0 auto;
 }
 .button-container .button {
   border-radius: 20px;
