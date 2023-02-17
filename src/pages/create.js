@@ -1,7 +1,6 @@
 import './create.css';
 
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
 
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
@@ -30,7 +29,6 @@ const InputTextField = styled(TextField)({
 });
 
 export function CreatePage(props) {
-  const navigate = useNavigate();
 
   // 모멘트 생성에 필요한 정보
   const [user, setUser] = useState('');
@@ -232,7 +230,7 @@ export function CreatePage(props) {
         message: '모멘트 생성! 편집 페이지로 이동합니다...'
       });
       setTimeout(() => {
-        navigate('/edit');
+        window.location.replace('/edit');
       }, 2000);
     } catch (error) {
       console.error(error);
