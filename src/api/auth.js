@@ -31,22 +31,26 @@ export function signOutFirebaseAuth() {
 }
 
 export async function login(user, id, password) {
-  let encoded;
+  return new Promise(async (resolve, reject) => {
+    let encoded;
+    
+    try {
+      encoded = await getPasswordCode(user, id);
+    } catch (error) {
+      // 존재하지 않는 username, moment id
+      console.error(error);
+      reject(false);
+    }
 
-  try {
-    encoded = await getPasswordCode(user, id);
-  } catch (error) {
-    // 존재하지 않는 username, moment id
-    console.error(error);
-  }
-
-  if (encoded === sha256(password)) {
-    const user = await signInFirebaseAuth();
-    console.log('login: ', user);
-  } else {
-    // 비밀번호가 일치하지 않는다.
-    console.error('login failed');
-  }
+    if (encoded === sha256(password)) {
+      await signInFirebaseAuth();
+      resolve(true);
+    } else {
+      // 비밀번호가 일치하지 않는다.
+      console.error('login failed');
+      reject(false);
+    }
+  });
 }
 
 export async function logout() {

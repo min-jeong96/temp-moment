@@ -6,8 +6,8 @@ import { getMomentData, getMomentTweets } from '../api/firestore.js';
 
 import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
-import IosShareIcon from '@mui/icons-material/IosShare';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import ShareIcon from '@mui/icons-material/Share';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
 import { EmbeddedTweets } from '../components/EmbeddedTweets.js';
 import { AlertSnackbar } from '../components/AlertSnackbar.js';
@@ -60,12 +60,11 @@ export function Moment(props) {
       <div className='toolbar'>
         <div className='title'>{momentData.title}</div>
         <ButtonGroup className='buttons'>
-          <IconButton aria-label="share" onClick={() => { share() }}>
-            {/* TODO: ios safari not work */}
-            <IosShareIcon color={isOSDarkMode ? 'primary' : 'info'}/>
+          <IconButton aria-label="share" onClick={share}>
+            <ShareIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
-          <IconButton aria-label="etc functions" disabled>
-            <MoreHorizIcon color={isOSDarkMode ? 'primary' : 'info'}/>
+          <IconButton aria-label="etc functions" onClick={edit}>
+            <PostAddIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
         </ButtonGroup>
       </div>
@@ -76,22 +75,26 @@ export function Moment(props) {
   )
 
   function share() {
-  navigator.clipboard.writeText(window.location.href)
-    .then(() => {
-      setAlert({
-        timestamp: Date.now(),
-        severity: 'success',
-        message: 'Text copied to clipboard...'
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        setAlert({
+          timestamp: Date.now(),
+          severity: 'success',
+          message: 'Text copied to clipboard...'
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        setAlert({
+          timestamp: Date.now(),
+          severity: 'error',
+          message: 'ERR: Text not copied...'
+        });
       });
-    })
-    .catch((error) => {
-      console.error(error);
-      setAlert({
-        timestamp: Date.now(),
-        severity: 'error',
-        message: 'ERR: Text not copied...'
-      });
-    });
+  }
+
+  function edit() {
+    window.location.href = `/edit/${user}/${id}`;
   }
 }
 

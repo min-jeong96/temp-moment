@@ -54,7 +54,7 @@ export function CreatePage(props) {
           <li>한 트위터 ID에 동일한 모멘트 ID로 2개 이상 모멘트를 생성할 수 없습니다.</li>
           <li><span>비밀번호 찾기 및 재설정 기능이 없습니다.</span> 비밀번호 분실 시 모멘트 수정 및 삭제가 불가능합니다. 설정 시 유의해 주세요.</li>
         </ul>
-        <div className='url'>
+        <div className='highlighted'>
           <p>생성될 모멘트의 URL</p>
           <p><span>https://temp-moment.web.app</span><wbr/>/{user}<wbr/>/{id}</p>
         </div>
@@ -97,9 +97,9 @@ export function CreatePage(props) {
             helperText={inputError.passwordReEntered.text} />
         </div>
       </div>
-      <div className='button-container'>
+      <div className='button-container full'>
         <BasicButton
-          className='button'
+          className='button rounded'
           fullWidth
           variant='contained'
           disabled={disabledCreateButton()}

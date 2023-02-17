@@ -72,6 +72,8 @@ function EmbeddedTweet(props) {
   }
 
   function convertText(text) {
-    return text.replaceAll(/https:\/\/[^ \t\r\n\v\f]*/g, '');
+    return text
+            .replaceAll(/https:\/\/[^ \t\r\n\v\f]*/g, '')
+            .replaceAll(/\\n/g, '\n');
   }
 }

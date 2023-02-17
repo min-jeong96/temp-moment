@@ -1,65 +1,6 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.container > .card {
-  margin: 20px;
-  padding: 20px;
-  border: 1px solid var(--sub-text);
-  border-radius: 20px;
-}
-
-.title {
-  margin: 8px 0 24px;
-  font-size: 1.25rem;
-  font-weight: bold;
+.card .highlighted > p {
   text-align: center;
 }
-
-.description > p {
-  margin: 8px 0;
-}
-
-.warnings {
-  margin: 16px 0;
-  padding: 0 0 0 16px;
-  list-style-type: '\26A0';
+.card .highlighted > p > span {
   color: var(--sub-text);
 }
-.warnings > li {
-  margin: 4px 0;
-  padding: 0 0 0 8px;
-}
-.warnings > li > span {
-  color: var(--text);
-}
-
-.url {
-  margin: 20px 0;
-  border-top: 2px solid var(--primary);
-  border-bottom: 2px solid var(--primary);
-}
-.url > p {
-  text-align: center;
-}
-.url > p > span {
-  color: var(--sub-text);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-}
-
-.button-container {
-  width: calc(100% - 32px);
-  max-width: 560px;
-  padding: 0 0 20px;
-  margin: 0 auto;
-}
-.button-container .button {
-  border-radius: 20px;
-  font-weight: bold;
-} 

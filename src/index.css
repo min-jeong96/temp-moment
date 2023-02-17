@@ -43,3 +43,60 @@ code {
   width: 100%;
   max-width: 600px;
 }
+
+/* CARD FORMAT */
+.card {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid var(--sub-text);
+  border-radius: 20px;
+}
+.card .title {
+  margin: 8px 0 24px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.card .description > p {
+  margin: 8px 0;
+}
+
+.card .warnings {
+  margin: 16px 0;
+  padding: 0 0 0 16px;
+  list-style-type: '\26A0';
+  color: var(--sub-text);
+}
+.card .warnings > li {
+  margin: 4px 0;
+  padding: 0 0 0 8px;
+}
+.card .warnings > li > span {
+  color: var(--text);
+}
+
+.card .highlighted {
+  margin: 20px 0;
+  border-top: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+}
+
+.card .form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* BUTTON FORMAT */
+.button-container.full {
+  width: calc(100% - 32px);
+  max-width: 560px;
+  padding: 0 0 20px;
+  margin: 0 auto;
+}
+.button-container .button {
+  font-weight: bold;
+}
+.button-container .button.rounded {
+  border-radius: 20px;
+}

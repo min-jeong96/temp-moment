@@ -1,7 +1,4 @@
-import {
-  Routes,
-  Route
-} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 import './main.css';
@@ -15,8 +12,9 @@ export function Main(props) {
 
   const isInvalidURI = !['create', 'edit'].includes(params['*']);
   const isMomentURI = params['*'].match(/[a-zA-Z0-9_-]*\/[a-zA-Z0-9_-]*/g) && params['user'] && params['id'];
+  const isEditMomentURI = params['*'].match(/[a-zA-Z0-9_-]*\/[a-zA-Z0-9_-]*/g) && params['user'] && params['id'];
 
-  if (!isMomentURI && isInvalidURI) {
+  if (!isMomentURI && isInvalidURI && isEditMomentURI) {
     throw new Response('Not found', { status: 404 });
   }
 
@@ -27,6 +25,9 @@ export function Main(props) {
         element={<CreatePage />} />
       <Route
         path='/edit'
+        element={<EditIndexPage />} />
+      <Route
+        path='/edit/:user/:id'
         element={<EditIndexPage />} />
       <Route
         path='/:user/:id'
