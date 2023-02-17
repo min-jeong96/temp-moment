@@ -12,7 +12,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import { EmbeddedTweets } from '../components/EmbeddedTweets.js';
 import { AlertSnackbar } from '../components/AlertSnackbar.js';
 
-import './moment.css';
+import style from './moment.module.css';
 
 export function Moment(props) {
   const {user, id} = useParams();
@@ -56,10 +56,10 @@ export function Moment(props) {
   }, []);
 
   return (
-    <div className='container'>
-      <div className='toolbar'>
-        <div className='title'>{momentData.title}</div>
-        <ButtonGroup className='buttons'>
+    <div className={style.container}>
+      <div className={style.toolbar}>
+        <div className={style.title}>{momentData.title}</div>
+        <ButtonGroup className={style.buttons}>
           <IconButton aria-label="share" onClick={share}>
             <ShareIcon color={isOSDarkMode ? 'primary' : 'info'}/>
           </IconButton>
@@ -101,15 +101,15 @@ export function Moment(props) {
 function MomentHeader(props) {
   if (props.momentData.title === '') {
     return (
-      <div className='header'></div>
+      <div className={style.header}></div>
     )
   } else {
     return (
-      <div className='header'>
-        <div className='description'>{props.momentData.description}</div>
-        <div className='info'>
-          <div className='user-id'><a href={`https://twitter.com/${props.user}`}>@{props.user}</a></div>
-          <time className='edit-date' dateTime={`${new Date(props.momentData.timestamp)}`}>
+      <div className={style.header}>
+        <div className={style.description}>{props.momentData.description}</div>
+        <div className={style.info}>
+          <div className={style['user-id']}><a href={`https://twitter.com/${props.user}`}>@{props.user}</a></div>
+          <time className={style['edit-date']} dateTime={`${new Date(props.momentData.timestamp)}`}>
             {new Date(props.momentData.timestamp).toLocaleDateString('ko-kr', { year: 'numeric', month: 'long', day: 'numeric' })}
           </time>
         </div>
