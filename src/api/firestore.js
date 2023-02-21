@@ -59,10 +59,39 @@ export async function getMomentTweets(user, id) {
   const q = query(collection(firestore, 'moments', `${user}:${id}`, 'tweets'));
   const querySnapshot = await getDocs(q);
 
-  const tweets = [];
+  const tweetsFromFirestore = [];
   querySnapshot.forEach((doc) => {
-    tweets.push({ id: doc.id, ...doc.data() });
+    tweetsFromFirestore.push({ id: doc.id, ...doc.data() });
   });
+
+  // 모멘트 목록에 맞게 처리
+  const preprocessTweetData = (metadata, tweets) => {
+    const getAttachmentKey = (url) => {
+      return url.split('/')[url.split('/').length - 1].split('.')[0];
+    }
+
+    const preprocessed = metadata.tweets_id.map((id) => {
+      let tweet = tweets.find(t => t.id === id);
+      let { attachments, created_at, ...data } = tweet;
+
+      return {
+        isValidData: true,
+        attachments: tweet.attachments.map((attachment, index) => {
+          return {
+            key: getAttachmentKey(attachment),
+            url: attachment,
+            alt: `${index + 1}번째 jpg 또는 gif, video 썸네일`
+          }
+        }),
+        created_at: new Date(tweet.created_at),
+        ...data
+      }
+    });
+    return preprocessed;
+  }
+
+  const momentDataFromFirestore = await getMomentData(user, id);
+  const tweets = preprocessTweetData(momentDataFromFirestore, tweetsFromFirestore);
 
   return tweets;
 }

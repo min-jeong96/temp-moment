@@ -50,7 +50,7 @@ export function Moment(props) {
       }
 
       const tweetsFromFirestore = await getMomentTweets(user, id);
-      setTweets(preprocessTweetData(momentDataFromFirestore, tweetsFromFirestore));
+      setTweets(tweetsFromFirestore);
     }
     fetch();
   }, []);
@@ -116,29 +116,4 @@ function MomentHeader(props) {
       </div>
     )
   }
-}
-
-function preprocessTweetData(metadata, tweets) {
-  const getAttachmentKey = (url) => {
-    return url.split('/')[url.split('/').length - 1].split('.')[0];
-  }
-
-  const preprocessed = metadata.tweets_id.map((id) => {
-    let tweet = tweets.find(t => t.id === id);
-    let { attachments, created_at, ...data } = tweet;
-
-    return {
-      isValidData: true,
-      attachments: tweet.attachments.map((attachment, index) => {
-        return {
-          key: getAttachmentKey(attachment),
-          url: attachment,
-          alt: `${index + 1}번째 jpg 또는 gif, video 썸네일`
-        }
-      }),
-      created_at: new Date(tweet.created_at),
-      ...data
-    }
-  });
-  return preprocessed;
 }

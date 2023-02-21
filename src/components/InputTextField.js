@@ -18,4 +18,10 @@ export const InputTextField = styled(TextField)({
       borderColor: 'var(--sub-text)',
     },
   },
+  '& .MuiInputBase-root': { 
+    color: 'var(--text)',
+    '& fieldset': {
+      borderColor: 'var(--sub-text)',
+    },
+  },
 });
