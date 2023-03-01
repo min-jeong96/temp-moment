@@ -2,7 +2,7 @@ import sha256 from 'js-sha256';
 
 // Import the functions you need from the SDKs you need
 import { getFirestore } from "firebase/firestore";
-import { doc, getDoc, getDocs, setDoc, updateDoc, collection, query } from "firebase/firestore";
+import { doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, query } from "firebase/firestore";
 import { app } from './firebase.js';
 import { signInFirebaseAuth, signOutFirebaseAuth } from './auth.js';
 
@@ -66,23 +66,11 @@ export async function getMomentTweets(user, id) {
 
   // 모멘트 목록에 맞게 처리
   const preprocessTweetData = (metadata, tweets) => {
-    const getAttachmentKey = (url) => {
-      return url.split('/')[url.split('/').length - 1].split('.')[0];
-    }
-
     const preprocessed = metadata.tweets_id.map((id) => {
       let tweet = tweets.find(t => t.id === id);
-      let { attachments, created_at, ...data } = tweet;
+      let { created_at, ...data } = tweet;
 
       return {
-        isValidData: true,
-        attachments: tweet.attachments.map((attachment, index) => {
-          return {
-            key: getAttachmentKey(attachment),
-            url: attachment,
-            alt: `${index + 1}번째 jpg 또는 gif, video 썸네일`
-          }
-        }),
         created_at: new Date(tweet.created_at),
         ...data
       }
@@ -136,4 +124,26 @@ export async function createMomentData(user, id, obj) {
 export async function updateMomentData(user, id, obj) {
   const docRef = doc(firestore, 'moments', `${user}:${id}`);
   await updateDoc(docRef, obj);
+}
+
+export async function createMomentTweet(user, id, tweet) {
+  const docRef = doc(firestore, 'moments', `${user}:${id}`, 'tweets', tweet.id);
+  await setDoc(docRef, tweet);
+}
+
+export async function createMomentTweets(user, id, tweets) {
+  for (let tweet of tweets) {
+    await createMomentTweet(user, id, tweet);
+  }
+}
+
+export async function deleteMomentTweet(user, id, tweetId) {
+  const docRef = doc(firestore, 'moments', `${user}:${id}`, 'tweets', tweetId);
+  await deleteDoc(docRef);
+}
+
+export async function deleteMomentTweets(user, id, tweetsId) {
+  for (let tweetId of tweetsId) {
+    await deleteMomentTweet(user, id, tweetId);
+  }
 }

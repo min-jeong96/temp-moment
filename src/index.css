@@ -94,9 +94,9 @@ code {
   padding: 0 0 20px;
   margin: 0 auto;
 }
-.button-container .button {
+.button {
   font-weight: bold;
 }
-.button-container .button.rounded {
+.button.rounded {
   border-radius: 20px;
 }

@@ -62,10 +62,13 @@ app.get('/getTweets', async(req, res) => {
     tweets: {
       data: [
         {
-          author_id: string,  // 트윗 작성자의 twitter unique key
-          create_at: string,  // 트윗 생성 시점
-          id: string,         // 트윗의 twitter unique key
-          text: string        // 트윗 텍스트 전문 (이미지 링크 포함)
+          author_id: string,      // 트윗 작성자의 twitter unique key
+          create_at: string,      // 트윗 생성 시점
+          id: string,             // 트윗의 twitter unique key
+          text: string            // 트윗 텍스트 전문 (이미지 링크 포함)
+          attachments?: {         // 미디어가 포함된 트윗인 경우
+            media_keys: string [] // 미디어 키 목록
+          }
         }
       ],
       errors: [
@@ -82,6 +85,14 @@ app.get('/getTweets', async(req, res) => {
             name: string,               // 사용자가 설정한 닉네임
             username: string,           // 사용자의 계정 아이디
             profile_image_url: string,  // 프로필 이미지 (https://pbs.twimg.com/profile_images/로 시작한다)
+          }
+        ],
+        media: [
+          {
+            media_key: string,          // 미디어 키
+            url?: string,               // 이미지 파일의 경우
+            preview_image_url?: string  // gif, video의 경우 썸네일 이미지
+            alt_text: string            // 사용자가 업로드 시 입력한 alt text
           }
         ]
       }

@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 32px);
+  padding: 0 16px 16px;
+  color: var(--text);
+  font-weight: bold;
+  border-bottom: 1px solid var(--sub-text);
+}
+.header > .info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+.header .save {
+  margin: 16px 0 0;
+}
+
+.tweets {
+  width: calc(100% - 32px);
+  padding: 0 16px 16px;
+}
+.tweets .tweet-container {
+  display: flex;
+  align-items: center;
+}
+.tweets .tweet-container .content {
+  flex-grow: 1;
+}
+.tweets .tweet-container .content.mockup {
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  border-bottom: 1px solid var(--sub-text);
+}
+.tweets .button {
+  min-width: 10%;
+}

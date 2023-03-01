@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { logout } from '../../api/auth.js';
 
 import { MomentLoginPage } from './login.js';
+import { MomentEditorPage } from './editor.js';
 
 export function EditIndexPage(props) {
   const params = useParams();
@@ -31,6 +32,10 @@ export function EditIndexPage(props) {
         user={user} setUser={setUser}
         id={id} setId={setId}
         password={password} setPassword={setPassword} />
+      <MomentEditorPage
+        isAuthenticated={isAuthenticated}
+        user={user} setUser={setUser}
+        id={id} setId={setId} />
     </div>
   )
 }
